@@ -135,7 +135,7 @@ app.getCityCode = (latitude, longitude) => {
         const data = res.data.places[0];
         app.destination.cityCode = data.id;
         app.getPOIs(app.destination.cityCode);
-        app.filterRestaurants(app.destination.cityCode);
+        app.getRestaurants(app.destination.cityCode);
     });
 }
 
@@ -215,45 +215,41 @@ app.getRestaurants = (cityCode, offset = 0) => {
             'tags': 'restaurants',
             'categories_not': 'discovering|hiking|playing|relaxing|shopping|sightseeing|sleeping|doing_sports|traveling',
             'parents': cityCode,
-            'limit': 4,
-            'offset': offset,
+            'limit': 100,
             'levels': 'poi'
         }
-    });
-}
-    
-app.filterRestaurants = (code, offset) => { 
-    app.getRestaurants(code).then((res) => {
+    }).then((res) => {
         const restaurantList = res.data.places;
-
-        console.log(restaurantList) ;
-
+        console.log(restaurantList);
         const filteredRestaurants = restaurantList.filter((place)=> {
             return place.thumbnail_url && place.perex
         });
 
-        console.log(filteredRestaurants.length);
-        
-        if (filteredRestaurants.length < 4 ) {
-            app.offset+=4;
-            app.getRestaurants(app.destination.cityCode, offset)
-            .then((res)=>{
-                console.log(res);
-            });
-            console.log(filteredRestaurants);
-        } else {
-            console.log('else!');
-            filteredRestaurants.forEach((place)=> {
-                const restaurant = {
-                    'name': place.name,
-                    'description': place.perex,
-                    'photo': place.thumbnail_url
-                };
-                app.restaurants.push(restaurant);
-            });
-            console.log(app.restaurants);
-            app.displayRestaurants(app.restaurants);
-        }
+        console.log(filteredRestaurants);
+        const theFour= filteredRestaurants.slice(0,4);
+        console.log(theFour);
+       
+
+        // if there are no restautanrs that have image and desc,
+        // tell user 'sorry, we ont have a lot of info, but check out these restaurants:
+        //
+        theFour.forEach((restaurant) => {
+            const item = {
+                'name': restaurant.name,
+                'description': restaurant.perex,
+                'photo': restaurant.thumbnail_url
+            }
+
+            // This doesn't work, fix later
+            if (restaurant.perex === null) {
+                item.description = 'No description available.'
+            } else if (restaurant.thumbnail_url === null) {
+                item.photo = "No photo available."
+            }
+            app.restaurants.push(item);
+        });
+        console.log(app.restaurants);
+        app.displayRestaurants(app.restaurants);
     });
 }    
 
