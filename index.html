@@ -8,22 +8,24 @@
     <title>KENZO & CO'S FIRST WEBSITE!</title>
 </head>
 <body>
-    <form>
-        <input type="search" placeholder="where are you" class="autocomplete" id="user">
-        <input type="search" placeholder="where do you want to go?" class="autocomplete" id="destination">
-        <input type="submit">
-    </form>
+    <header>
+        <form>
+            <!-- <input type="search" placeholder="where are you" class="autocomplete" id="user"> -->
+            <input type="search" placeholder="where do you want to go?" class="autocomplete" id="destination">
+            <input type="submit">
+        </form>
+    </header>
     <section class="container">
         <div id="currency"></div>
-        <div id="POI"></div>
-        <div id="restaurants"></div>
+        <div id="poi"></div>
+        <div id="tours"></div>
         <div id="weather"></div>
         <div id="language"></div>
-        <div id="transportation"></div>
+        <div id="airport"></div>
     </section>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <!-- <script src="public/scripts/main.js"></script> -->
-    <script src="dev/scripts/main.js"></script>
+    <script src="https://rawgithub.com/darkskyapp/skycons/master/skycons.js"></script>
+    <script src="public/scripts/main.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCoImY83DtgdM97LRKQoA33y9VuicAtNPI&libraries=places"></script>
 </body>
 </html>

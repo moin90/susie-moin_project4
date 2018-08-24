@@ -5,14 +5,98 @@ body {
 	font-size: 62.5%;
 }
 
-.container {
+// i just added this code to see what im working with you'll want to taret the images with classes 
+img {
+	max-width: 200px;
+}
+
+header {
 	width: 100%;
-	display: flex;
-	flex-wrap: wrap;
+	height: 25px;
+}
+
+
+.container {
+	width: 100vw;
+	height: calc(100vh - 25px);
+	display: grid;
+	grid-template-areas: 
+	"poi poi weather currency"
+	"poi poi tours tours"
+	"language airport tours tours";
+	grid-template-columns: 25% 25% 25% 25%;
+	grid-template-rows: 33% 33% 33%;
+}
+
+
+#poi {
+	grid-area: poi;
+	background: red;
+}
+
+#weather {
+	grid-area: weather;
+	background: yellow;
+}
+
+#currency{
+	grid-area: currency;
+	background: blue;
+}
+
+#tours{
+	grid-area: tours;
+	background: green;
+}
+
+#language {
+	grid-area: language;
+	background: PURPLE;
+}
+
+#airport{
+	grid-area: airport;
+	background: BROWN;
+}
+
+input[type=search] {
+	width: 300px;
 }
 
 .container div {
-	width: 400px;
 	// height: 300px;
 	border: 1px solid black;
+	background: yellow;
+}
+
+@media (max-width: 600px) {
+	.container {
+		grid-template-areas: 
+			"poi poi"
+			"poi poi" 
+			"weather currency"
+			"tours tours"
+			"tours tours"
+			"language airport" ;
+		grid-template-columns: 50% 50%;
+		grid-template-rows: repeat(6, 33vh);
+	}	
+}
+
+@media (max-width: 350px) {
+	.container {
+		grid-template-areas: 
+			"poi" 
+			"poi"
+			"poi" 
+			"weather" 
+			"currency"
+			"tours" 
+			"tours"
+			"tours"
+			"language" 
+			"airport" ;
+		grid-template-columns: 100%;
+		grid-template-rows: repeat(10, 350px);
+	}	
 }
