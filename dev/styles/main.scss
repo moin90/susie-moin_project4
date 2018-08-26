@@ -4,7 +4,7 @@ body {
 	background-color: #f2f2f2;
 	color: black;
 	font-size: 62.5%;
-    font-family: 'Work Sans', sans-serif;
+	font-family: 'Work Sans', sans-serif;
 }
 
 // i just added this code to see what im working with you'll want to taret the images with classes 
@@ -14,7 +14,7 @@ img {
 
 header {
 	width: 100%;
-	height: 50px;
+	height: 40px;
 		h1 {
 			font-weight: 700;
 			cursor: pointer;
@@ -23,6 +23,7 @@ header {
 			cursor: pointer;
 		}
 }
+
 
 .hero {
 	max-width: 1200px;
@@ -61,7 +62,7 @@ a {
 
 .block-title {
 	text-transform: uppercase;
-	font-size: 1.2rem;
+	font-size: 0.7rem;
 	letter-spacing: 1px;
 	font-weight: 500;
 }
@@ -74,24 +75,20 @@ a {
 	font-size: 1rem;
 }
 
-ul {
-	list-style: none;
-}
-
-
 .container {	
 	width: 100vw;
 	max-width: 1200px;
-	min-height: 700px;
 	margin: 0 auto;
-	height: calc(100vh - 25px);
+	height: calc(100vh - 70px);
 	display: grid;
+	border-top: 1px solid black;
+	border-left: none;
+	border-right: none;
 	grid-template-areas: 
 	"poi poi weather currency"
 	"poi poi tours tours"
 	"language airport tours tours";
 	grid-template-columns: 25% 25% 25% 25%;
-	// grid-template-rows: 50% 50% 50%;
 	grid-template-rows: 33% 33% 33% 33%;
 }
 
@@ -99,11 +96,15 @@ ul {
 #weather, #currency, #tours, #language, #airport, #poi {
 	line-height: 1.25;
 	padding: 10px;
+	padding-left: 0;
 		li {
 			padding: 25px 0;
 		}
 		h2 {
 			margin-bottom: 10px;
+		}
+		p {
+			font-size: 0.8rem;
 		}
 }
 
@@ -116,30 +117,25 @@ ul {
 	}
 }
 
-.poi-list {
-	display: flex;
-		figure {
-			width: 25%;
-		}
-}
-
 #poi {
 	grid-area: poi;
-	// background: red;
 			figure {
 				display: block;
 		}
 }
 
+.poi-figure {
+	float: left;
+	margin-right: 15px;
+}
+
 #weather {
 	grid-area: weather;
-	// background: yellow;
 	padding: 10px;
 }
 
 #currency{
 	grid-area: currency;
-	// background: blue;
 }
 
 #location {
@@ -152,7 +148,6 @@ ul {
 
 #tours{
 	grid-area: tours;
-	// background: green;
 		a {
 			text-decoration: none;
 			color: black;
@@ -163,16 +158,18 @@ ul {
 
 #language {
 	grid-area: language;
-	// background: PURPLE;
 }
 
 #airport{
 	grid-area: airport;
-	// background: BROWN;
 				p {
 					font-size: 0.8rem;
 					margin-top: 5px;
 				}
+}
+
+.poi-text {
+	margin-left: 25px;
 }
 
 input[type=search] {
@@ -189,12 +186,27 @@ input[type=search] {
 			color: grey;
 		}
 }
-
-.container div {
-	// height: 300px;
-	border: 1px solid black;
-	// background: yellow;
+footer {
+	background-color: #f2f2f2;
+	color: black;
+	border-top: 1px solid grey;
+	text-align: center;
+	padding-bottom: 0;
+	height: 25px;
+	margin-bottom: 0;
+		img {
+			vertical-align: center;
+			width: 30px;
+			float: right;	
+		}
 }
+
+.footer-text {
+	font-size: 0.6rem;
+	padding-top: 5px;
+
+}
+
 
 								//////* HOVER STATES *//////
 .hvr-shadow {
@@ -348,6 +360,20 @@ input[type=search]:focus, input[type=text]:focus {
   border: 1px solid rgba(81, 203, 238, 1);
 }
 
+					/*-----------------MEDIA QUERIES------------------------------------------*/
+
+@media (max-width: 900px) {
+    .container {
+        grid-template-areas:
+            "poi poi weather"
+            "poi poi currency"
+            "airport tours tours"
+            "language tours tours";
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 45% 45% 45% 45%;
+    }    
+}
+
 @media (max-width: 769px) {
 
 	.weather-text {
@@ -366,7 +392,7 @@ input[type=search]:focus, input[type=text]:focus {
 			"tours tours"
 			"language airport" ;
 		grid-template-columns: 50% 50%;
-		grid-template-rows: repeat(6, 33vh);
+		grid-template-rows: repeat(6, 35vh);
 	}	
 
 }
