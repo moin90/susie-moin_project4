@@ -1,0 +1,54 @@
+.splashPage, .contentPage {
+	width: 100vw;
+	position: relative;
+	top: 0;
+}
+
+.splashPage {
+	height: 100vh;
+	background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("../../public/assets/hero2.jpg");
+	background-position: center;
+	background-size: cover;	
+
+}
+
+.logo {
+	color: white;
+	font-size: 2.5rem;
+	font-weight: 700;
+	padding-left: 10px;
+	border: none;
+}
+
+.tagline {
+	color: white;
+	padding-left: 12px;
+	font-size: 0.8rem;
+	font-weight: 300;
+}
+
+.splashSearchForm {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	border: none;
+	background: rgba(255, 255, 255, 0.2);
+	padding: 20px 40px;
+	border-radius: 10px;
+}
+
+.splashSearchBar {
+	color: white;
+	border: none;
+	background: none;
+	padding:  5px;
+	border-bottom: 0.5px solid white;
+	font-size: 1rem;
+	width: 300px;
+}
+
+.splashSearchBar::placeholder {
+	color: white;
+	opacity: 1;
+}

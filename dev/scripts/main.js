@@ -12,22 +12,26 @@ app.tours = [];
 app.airport = {};
 app.language = {};
 
-// get user's current location
-// most of the other APIs we are requesting data from accept location info in the form of lat lng coords
-// so we pass user location into Google  geocoder to get lat and lng coords to use in other API requests
+
+// method to init Googlde Autocomplete;
+// takes parameter of an id to target specific input tags
 app.initAutocomplete = (id) => {
     new google.maps.places.Autocomplete(document.getElementById(id));
 }
 
+// most of the APIs we are requesting data from accept location info in the form of lat lng coords
+// so we enter the user's input into Google geocoder to get lat and lng coords to use in other API requests
 app.getDestinationInfo = (location) => {
     const geocoder = new google.maps.Geocoder();
     geocoder.geocode({
         'address': location
     }, (results, status) => {
+        // if there is no error, filter the result so that the component is a "country"
         if (status == google.maps.GeocoderStatus.OK) {
             const addressComponents = results[0].address_components.filter((component) => {
                 return component.types[0] === 'country';
             });
+            // out of the results of the filter, get the info and populate the app.destination object
             app.destination.countryCode = addressComponents[0].short_name;
             app.destination.countryName = addressComponents[0].long_name;
             app.destination.lat = results[0].geometry.location.lat();
@@ -43,21 +47,9 @@ app.getDestinationInfo = (location) => {
     });
 }
 
-app.getCoordinates = (location) => {
-    const geocoder = new google.maps.Geocoder();
-    geocoder.geocode({
-        'address': location
-    }, (res, err) => {
-        if (err == google.maps.GeocoderStatus.OK) {
-            let latitude = res[0].geometry.location.lat();
-            let longitude = res[0].geometry.location.lng();
-            console.log(latitude, longitude);
-        } else {
-            alert("Something went wrong." + err);
-        }
-    });
-}
 
+// ajax call to get weather
+// takes lat and lng coords as parameters
 app.getWeather = (latitude, longitude) => {
     $.ajax({
         url: `https://api.darksky.net/forecast/ea2f7a7bab3daacc9f54f177819fa1d3/${latitude},${longitude}`,
@@ -68,6 +60,7 @@ app.getWeather = (latitude, longitude) => {
         }
     })
     .then((res) => {
+        // take result and pull desired information into app.weather object
         app.weather.conditions = res.daily.summary;
         app.weather.currentTemp = Math.round(res.currently.temperature);
         app.weather.icon = res.daily.icon;
@@ -76,6 +69,8 @@ app.getWeather = (latitude, longitude) => {
     });
 }
 
+// i found that the points of interest and tours request works better with a city code instead of lat and lng coords
+// method to get city code from lat and lng to use in other ajax requests
 app.getCityCode = (latitude, longitude) => {
     $.ajax({
         url: `https://api.sygictravelapi.com/1.0/en/places/detect-parents`,
@@ -93,6 +88,8 @@ app.getCityCode = (latitude, longitude) => {
         const data = res.data.places[0];
         console.log(data);
 
+        // we specifically want to target cities
+        // if that result is a level smaller than a city, target the next parent ID
         if (data.level !== 'city') {
             const cityCode = data.parent_ids[0];
             console.log(data.parent_ids[0]);
@@ -100,6 +97,7 @@ app.getCityCode = (latitude, longitude) => {
             app.getPOIs(cityCode);
             app.getTours(cityCode);
         } else {
+        // if the result is a city, just use that id in the other rquests
             const cityCode = data.id;  
             app.getPOIs(cityCode);
             app.getTours(cityCode);
@@ -107,6 +105,7 @@ app.getCityCode = (latitude, longitude) => {
     });
 }
 
+// method to get POIs (points of interest);
 app.getPOIs = (cityCode) => {
     $.ajax({
         url: `https://api.sygictravelapi.com/1.0/en/places/list`,
@@ -116,6 +115,7 @@ app.getPOIs = (cityCode) => {
             'x-api-key': 'zziJYcjlmE8LbWHdvU5vC8UcSFvKEPsC3nkAl7eK'
         },
         data: {
+            'tags_not': 'Airport',
             'parents': cityCode,
             'level': 'poi',
             'limit': 20,
@@ -123,15 +123,17 @@ app.getPOIs = (cityCode) => {
     }).then((res)=> {
         const points = res.data.places;
 
+        // we only want results that have an image and a descriptions (perex)
         const filteredPoints = points.filter((place)=> {
             return place.thumbnail_url && place.perex
         });
+
+        // if there are no results that have an image and a description, call the displayError function
         if (filteredPoints.length === 0) {
-            app.displayError('tours', 'tours');
+            app.displayError('poi', 'points of interest');
         } else {
-            const theFour= filteredPoints.slice(0,3);
-            console.log(theFour);
-            theFour.forEach((point)=> {
+            // take the first 3 items and push their properties onto the app.POIs object
+            filteredPoints.forEach((point)=> {
                 const place = {
                     'name': point.name,
                     'description': point.perex,
@@ -143,7 +145,7 @@ app.getPOIs = (cityCode) => {
         }
     });
 }
-
+//method to get closest airport
 app.getAirports = (lat, lng) => {
     $.ajax({
         url: `https://api.sygictravelapi.com/1.0/en/places/list`,
@@ -157,13 +159,17 @@ app.getAirports = (lat, lng) => {
             'tags': 'Airport',
         }
     }) .then ((res) => {
+        // push the properties onto app.airport object
         app.airport.name = res.data.places[0].name;
         app.airport.description = res.data.places[0].perex;
         app.airport.photo = res.data.places[0].thumbnail_url;
+
+        // call displayAirports using properties from ajax request
         app.displayAirports(app.airport);
     });
 }
 
+// method to get language
 app.getLanguage = (country) => {
     $.ajax({
         url: `https://restcountries.eu/rest/v2/name/${country}`,
@@ -174,14 +180,16 @@ app.getLanguage = (country) => {
         }
     }) .then((res) => {
         console.log(res);
-        app.language.name = res[0].languages[0].name;
-        app.language.nativeName = res[0].languages[0].nativeName;
-        console.log(app.language.name, app.language.nativeName);
+        app.language.primary = res[0].languages[0].name;
+        if (res[0].languages.length > 1) {
+            app.language.secondary = res[0].languages[1].name;
+        }
         app.displayLanguage(app.language);
     });
 
 }
 
+// 
 app.getTours = (cityCode) => {
     $.ajax({
         url: `https://api.sygictravelapi.com/1.0/en/tours/viator`,
@@ -203,7 +211,7 @@ app.getTours = (cityCode) => {
         if (tours.length === 0) {
             app.displayError('tours', 'tours');
         } else {
-            for (let i = 0; i < 3; i ++) {
+            for (let i = 0; i < tours.length; i ++) {
                 const tour = {
                     name: tours[i].title,
                     photo: tours[i].photo_url,
@@ -246,7 +254,7 @@ app.convertCurrency = (userCurrency, destinationCurrency) => {
         app.currency.exchangeRate = res[`${userCurrency}_${destinationCurrency}`];
         console.log(app.currency.exchangeRate);
 
-        $('#currency').append(`<h2>The conversion rate is ${app.currency.exchangeRate.toFixed(2)}</h2>`)
+        $('#currency').append(`<h2>$1 ${userCurrency} = ${app.currency.symbol} ${app.currency.exchangeRate.toFixed(2)} ${destinationCurrency}</h2>`)
 
     });
 }
@@ -257,48 +265,11 @@ app.displayError = (divID, topic) => {
     $(`#${divID}`).append(title, `<h2>Sorry, we don't have detailed information about ${topic} in this area. Try your search again in a nearby city or related area.</h2>`);
 }
 
-app.displayLanguage = (object) => {
-    console.log(object.name, object.nativeName);
-    const title = `<h1>Primary Language</h1>`;
-    const name = `<h2>${object.name}</h2>`;
-    const nativeName = `<h2>${object.nativeName}</h2>`;
-    $('#language').append(title, name, nativeName)
-}
-
-app.displayAirports = (object) => {
-    const title = `<h1>Closest Airport</h1>`;
-    const name = `<h2>${object.name}</h2>`;
-    const desc = `<p>${object.description}</p>`;
-    const photo = `<img src="${object.photo}"/>`;
-    $('#airport').append(title, name, photo, desc);
-}
-
-app.displayRestaurants = (array) => {
-    const title = `<h1>Restaurants</h1>`;
-    $('#restaurants').append(title);
-    array.forEach((item) => {
-        const name = `<h2>${item.name}<h2>`;
-        const desc = `<p>${item.description}</p>`;
-        const photo = `<img src="${item.photo}">`;
-        $('#restaurants').append(name, photo, desc);
-    });
-}
-
-app.displayTours = (array) => {
-    const title = `<h1>Top Tours</h1>`;
-    $('#tours').append(title);
-    array.forEach((item) => {
-        const name = `<h2>${item.name}<h2>`;
-        const photo = `<img src="${item.photo}">`;
-        const link = `<a href="${item.url}">Book Now</a>`;
-        $('#tours').append(name, photo, link);
-    });
-}
 
 app.displayCurrency = (object) => {
-    const title = `<h1>Currency</h1>`;
+    const title = `<h3>Currency</h3>`;
     const html = `<h2>The currency used is ${object.symbol} ${object.code}</h2>`;
-    const input = `<form id="userCurrency"><input type="text" id="user" placeholder="Enter your location to convert."><input type="submit"></form>`;
+    const input = `<form id="userCurrency"><input class="userCurrency  type="search" id="user" placeholder="Enter your location."></form>`;
     $('#currency').append(title,html, input);
     app.getUserInfo();
 }
@@ -346,24 +317,150 @@ app.getUserCurrency = (countryCode) => {
     });
 }
 
+
+app.displayLanguage = (object) => {
+    console.log(object.name, object.nativeName);
+    const title = `<h3>Language</h3>`;
+    const primary = `<h2>Primary</h2><h4>${object.primary}</h4>`;
+    const secondary = `<h2>Secondary</h2><h4>${object.secondary}</h4>`;
+    $('#language').append(title, primary)
+    if (object.secondary !== undefined) {
+        $('#language').append(secondary);
+    } 
+}
+
+app.displayAirports = (object) => {
+    const title = `<h3>Closest Airport</h3>`;
+    const name = `<h4>${object.name}</h4>`;
+    // const desc = `<p>${object.description}</p>`;
+    // const photo = `<img src="${object.photo}"/>`;
+    $('#airport').append(title, name);
+}
+
+// method to display tours
+// i realized when there's a lot of results, it's not ideal for mobile users
+// so i tried some simple "pagination" when the screen width is less than 600px
+// create 2 variables, one to act as a "counter" and one to dictate results per page
+// when user clicks 'load more', it appends the next three results, removes the button, and appends a new button at the end of the new results
+app.displayTours = (array) => {
+    const title = `<h3>Top Tours</h3>`;
+    $('#tours').append(title);
+    
+    if ($(window).width() <= 600) {	
+        let counter = 0;
+        let resultsPerPage = 3;
+        for (let i = counter; i < resultsPerPage; i++) {
+            const div = $('<div class="clearfix hvr-shadow">');
+            const name = `<h2>${array[i].name}<h2>`
+            const photo = `<img class="hvr-grow-shadow" src="${array[i].photo}">`;
+            const link = `<a class="hvr-underline-from-center" href="${array.url}">Book Now</a>`;
+
+            const text = $(`<div>`).append(name, link);
+            div.append(photo, text);
+            $('#tours').append(div);
+        }    
+
+        const loadMore = `<button class="loadMore hvr-grow-shadow">Load More</button>`;
+        $('#tours').append(loadMore);
+        $('#tours').on('click', '.loadMore', function() {
+            this.remove();
+            counter+=3;
+            for (let i = counter; i < (counter + resultsPerPage); i++) {
+                const div = $('<div class="clearfix hvr-shadow">');
+                const name = `<h2>${array[i].name}<h2>`
+                const photo = `<img class="hvr-grow-shadow"  src="${array[i].photo}">`;
+                const link = `<a class="hvr-underline-from-center" href="${array.url}">Book Now</a>`;
+                
+                const text = $(`<div>`).append(name, link);
+                div.append(photo, text);
+                $('#tours').append(div);
+            }
+            $('#tours').append(loadMore);
+        });
+
+        // if screen width is not less than 600px, append elements normally
+	} else {
+        array.forEach((item) => {
+            const div = $('<div class="clearfix hvr-shadow">');
+            const name = `<h2>${item.name}<h2>`;
+            const photo = `<img class="hvr-grow-shadow" src="${item.photo}">`;
+            const link = `<a class="hvr-underline-from-center" href="${item.url}">Book Now</a>`;
+            const text = $('<div>').append(name, link);
+            div.append(photo, text);
+            $('#tours').append(div);
+        });
+    }
+}
+
+// method to display points of interest
+// same "pagination" system as tours
 app.displayPOIs = (array) => {
-    const title = `<h1>Points of Interest</h1>`;
+    const title = `<h3>Points of Interest</h3>`;
     $('#poi').append(title);
-    array.forEach((item) => {
-        const name = `<h2>${item.name}<h2>`;
-        const desc = `<p>${item.description}</p>`;
-        const photo = `<img src="${item.photo}">`;
-        $('#poi').append(name, photo, desc);
-    });
+    if ($(window).width() <= 600) {	
+        let counter = 0;
+        let resultsPerPage = 3;
+        for (let i = counter; i < resultsPerPage; i++) {
+            const div = $(`<div class="clearfix hvr-shadow">`);
+            const name = `<h2>${array[i].name}<h2>`;
+            const desc = `<p>${array[i].description}</p>`;
+            const photo = `<img class="hvr-grow-shadow" src="${array[i].photo}">`;
+            const text = $('<div>').append(name, desc);
+
+            div.append(photo, text);
+            $('#poi').append(div);
+        }    
+
+        const loadMore = `<button class="loadMore hvr-grow-shadow">Load More</button>`;
+        $('#poi').append(loadMore);
+
+        $('#poi').on('click', '.loadMore', function() {
+            this.remove();
+            counter+=3;
+            for (let i = counter; i < (counter + resultsPerPage); i++) {
+                const div = $(`<div class="clearfix hvr-shadow">`);
+                const name = `<h2>${array[i].name}<h2>`;
+                const desc = `<p>${array[i].description}</p>`;
+                const photo = `<img class="hvr-grow-shadow" src="${array[i].photo}">`;
+                const text = $('<div>').append(name, desc);
+    
+                div.append(photo, text);
+                $('#poi').append(div);
+            }
+            $('#poi').append(loadMore);
+        });
+        // else just append all the results normally
+	} else {    
+        array.forEach((item) => {
+            const div = $(`<div class="clearfix hvr-shadow">`);
+            const name = `<h2>${item.name}<h2>`;
+            const desc = `<p>${item.description}</p>`;
+            const photo = `<img class="hvr-grow-shadow" src="${item.photo}">`;
+            const text = $('<div>').append(name, desc);
+            div.append(photo, text);
+            $('#poi').append(div);
+        });
+    }    
 }
 
 app.displayWeather = (object) => {
-    const title = `<h1>Weather</h1>`;
-    const icon = `<canvas id="${object.icon}" width="128" height="128"></canvas>`;
-    const html = `<h2>Current temp: ${object.currentTemp}</h2>
-        <p>${object.conditions}</p>`
+    const title = `<h3>Weather</h3>`;
+    const icon = `<canvas id="${object.icon}" width="80" height="80"></canvas>`;
+    const html = `<h2>Currently:</h2> 
+    <h4>${object.currentTemp}</h4>
+        <p class="weatherText">${object.conditions}</p>`
     $('#weather').append(title, icon, html);
     app.loadIcons();
+}
+
+app.randomHero = () => {
+    let i = Math.floor(Math.random() * 5) + 1
+    console.log(i);
+    $('.splashPage').css({
+        'background': `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("../../public/assets/hero${i}.jpg")`,
+        'background-position': 'center',
+	    'background-size': 'cover'	
+    });
 }
 
 app.loadIcons = () => {
@@ -384,10 +481,17 @@ app.loadIcons = () => {
 app.events = () => {
     app.initAutocomplete('destination');
     $('form').on('submit', (e) => {
+        $('#splashPage').toggle(false);
+        $('#contentPage').toggle(true);
+        $('form').removeClass('splashSearchForm');
+        $('#destination').removeClass('splashSearchBar');
+        $('form').addClass('contentSearchForm');
+        $('#destination').addClass('contentSearchBar');
         e.preventDefault();
         $('div').empty();
         const destination = $('#destination').val();
         if (destination.length > 0) {
+            $('#destinationName').text(destination);
             app.getDestinationInfo(destination);
         }
         $('#destination').val('');
@@ -403,6 +507,9 @@ app.events = () => {
 }
 
 app.init = () => {
+    app.randomHero();
+    app.initAutocomplete('destination');
+    $('#contentPage').toggle(false);
     app.events();
 }
 

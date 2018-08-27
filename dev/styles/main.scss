@@ -1,24 +1,75 @@
 @import 'setup';
+@import 'hovers';
+
 
 body {
 	color: black;
 	font-size: 62.5%;
+	font-family: "Work Sans", sans-serif;
+	background: $secondary;
 }
 
-// i just added this code to see what im working with you'll want to taret the images with classes 
-img {
+h2 {
+	cursor: pointer;
+	font-size: 1rem;
+	font-weight: 600;
+	margin: 10px 0px;
+}
+
+h3 {
+	text-transform: uppercase;
+	font-weight: 500;
+	font-size: 0.7rem;
+	letter-spacing: 0.08rem;
+}
+
+p {
+	font-size: 0.8rem;
+}
+
+h4 {
+	font-size: 1.8rem;
+}
+
+button {
+	border: none;
+	background: black;
+	color: white;
+	padding: 5px;
+	margin-left: 40%;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	// transform: translateX(-50%);
+}
+
+a {
+	padding-bottom: 5px;
+	text-decoration: none;
+}
+
+@import 'splash';
+
+
+.content img {
 	max-width: 200px;
 }
 
 header {
 	width: 100%;
-	height: 25px;
+	height: 40px;
+	border-bottom:  1px solid black;
 }
 
+#destinationName {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+	top: 8px;
+}
 
 .container {
 	width: 100vw;
-	height: calc(100vh - 25px);
+	height: calc(100vh - 40px);
 	display: grid;
 	grid-template-areas: 
 	"poi poi weather currency"
@@ -28,48 +79,152 @@ header {
 	grid-template-rows: 33% 33% 33%;
 }
 
+.content {
+	padding: 20px;
+}
+
+
+#poi img {
+	float: left;
+	margin-right: 15px;
+	max-width: 100px;
+}
+
+#poi > div {
+	padding: 25px 0px;
+	border-bottom: 1px solid #999999;
+}
 
 #poi {
 	grid-area: poi;
-	background: red;
+	// background: red;
+	width: 100%;
+	overflow-y: scroll;
+	border-right: 1px solid black;
+	border-bottom: 1px solid black;
 }
 
 #weather {
 	grid-area: weather;
-	background: yellow;
+	border-right:  1px solid black;
+	// background: yellow;
+
+	p {
+		font-size: 1rem;
+		clear: both;
+	}
+
+	canvas {
+		float: left;
+	}
 }
 
+
 #currency{
+	
 	grid-area: currency;
-	background: blue;
+	// background: blue;
+}
+
+.userCurrency {
+	border: none;
+	border-bottom: 2px solid black;
+	padding: 10px 25px 10px 0px;
+	background: $secondary;
 }
 
 #tours{
 	grid-area: tours;
-	background: green;
+	// background: green;
+	border-top: 1px solid black;
+	overflow-y: scroll;
+
+	img {
+		float: left;
+		height: 95px;
+		margin-right: 15px;
+	}
+
+	> div {
+		padding: 25px 0px;
+		border-bottom: 1px solid #999999;
+		width: 100%;
+	}
 }
+
 
 #language {
 	grid-area: language;
-	background: PURPLE;
+	border-right:  1px solid black;
+	// background: PURPLE;
 }
 
 #airport{
 	grid-area: airport;
-	background: BROWN;
+	border-right: 1px solid black;
+	// background: BROWN;
 }
 
-input[type=search] {
-	width: 300px;
+input[type=search]:focus, input[type=text]:focus, #user:focus {
+	box-shadow: 0 0 5px rgba(81, 203, 238, 1);
+	padding: 3px 0px 3px 3px;
+	margin: 5px 1px 3px 0px;
+	border: 1px solid rgba(81, 203, 238, 1);
 }
 
-.container div {
-	// height: 300px;
+.contentSearchForm {
+	position: absolute;
+	background: none;
+	right: 8px;
+	top: 8px;
+	transform: none;
+}
+
+.contentSearchBar {
+	background: none;
+	font-size: 0.8rem;
+	color: black;
 	border: 1px solid black;
-	background: yellow;
+	border-radius: 1.5rem;
+	padding: 5px;
+}
+
+@media (max-width: 900px) {
+	.container {
+		grid-template-areas: 
+			"poi poi weather"
+			"poi poi currency" 
+			"airport tours tours"
+			"language tours tours";
+		grid-template-columns: 1fr 1fr 1fr;
+		grid-template-rows: 40% 40% 40% 40%;
+	}	
+
+	#weather {
+		border-bottom: 1px solid black;
+	}
+
+	#poi {
+		border-bottom: none;
+	}
+
+	#airport {
+		border-top: 1px solid black;
+		border-bottom: 1px solid black;
+	}
 }
 
 @media (max-width: 600px) {
+	#destination {
+		width: 100px;
+	}
+
+	#poi {
+		border-bottom: 1px solid black;
+	}
+	#weather {
+		border-bottom: none;
+	}
 	.container {
 		grid-template-areas: 
 			"poi poi"
@@ -83,20 +238,37 @@ input[type=search] {
 	}	
 }
 
-@media (max-width: 350px) {
+@media (max-width: 500px) {
+	#logo {
+		display:none;
+	}
+}
+
+@media (max-width: 400px) {
+	#destinationName {
+		font-size: 1rem;
+		margin-left: -12%;
+	}
+
+	#weather {
+		border-bottom: 1px solid black;
+	}
+
+	#tours {
+		border-bottom: 1px solid black;
+	}
+
 	.container {
 		grid-template-areas: 
 			"poi" 
-			"poi"
 			"poi" 
 			"weather" 
 			"currency"
 			"tours" 
-			"tours"
-			"tours"
+			"tours" 
 			"language" 
 			"airport" ;
 		grid-template-columns: 100%;
-		grid-template-rows: repeat(10, 350px);
+		grid-template-rows: 275px 275px 200px 200px 275px 275px 200px 200px ;
 	}	
 }
