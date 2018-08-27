@@ -5,111 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="public/styles/style.css">
-    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,500,700" rel="stylesheet">
+    <title>GetGo</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Work+Sans:400,700,900" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" integrity="sha384-hWVjflwFxL6sNzntih27bfxkr27PmbbK/iSvJ+a4+0owXq79v+lsFkW54bOGbiDQ" crossorigin="anonymous">
-    <title>KENZO & CO'S FIRST WEBSITE!</title>
 </head>
 <body>
-    <header class="wrapper">
-        <h1 class="animated fadeInLeft hvr-icon-float-away">GetGo <i class="fas fa-plane-departure hvr-icon"></i></h1>
-        <h2 class="hvr-underline-from-center">Los Angeles, CA</h2>
-        <form class="search-bar animated fadeInRight">
-                <input type="search" placeholder="Where do you want to go?" class="autocomplete" id="destination">
-                <button type="submit" id="submit"><i class="fas fa-search"></i></button>
-        </form>
-    </header>
-
-    <section class="container">
-        <div id="currency" class="hvr-shadow">
-            <h3 class="block-title">Currency Converter</h3>
-            <h4 class="key-info">$1 CAD = $0.82 USD</h4>
-            <input type="text" placeholder="Your Location Here" class="autocomplete" id="location">
-        </div>
-
-        <div id="poi">
-            <h3 class="block-title">Points of Interest</h3>
-            <div>
-                <div class="content hvr-shadow clearfix">
-                    <figure class="poi-figure">
-                        <img src="public/assets/lax.jpg" alt="" class="hvr-grow-shadow"> 
-                    </figure>
-                    <div>
-                        <h2>Los Angeles International Airport</h2>
-                        <p>One of the best-known monuments of the entertainment industry and its most important icons</p>
-                    </div>
-                </div>
-                <div class="content hvr-shadow clearfix">
-                    <figure class="poi-figure">
-                        <img src="public/assets/lax.jpg" alt="" class="hvr-grow-shadow">
-                    </figure>
-                    <h2>Venice Beach</h2>
-                    <p>One of the best-known monuments of the entertainment industry and its most important icons</p>
-                </div>
-                <div class="content hvr-shadow clearfix">
-                    <figure class="poi-figure">
-                        <img src="public/assets/lax.jpg" alt="" class="hvr-grow-shadow">
-                    </figure>
-                    <h2>Universal Studios</h2>
-                    <p>One of the best-known monuments of the entertainment industry and its most important icons</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="tours">
-            <h3 class="block-title">Sightseeing Tours</h3>
-            <div>
-                <div class="content hvr-shadow clearfix">
-                    <figure class="poi-figure">
-                        <img src="public/assets/lax.jpg" alt="" class="hvr-grow-shadow">
-                    </figure>
-                    <div class="poi-text">
-                        <h2>Los Angeles International Airport</h2>
-                        <p>One of the best-known monuments of the entertainment industry and its most important icons</p>
-                    </div>
-                </div>
-                <div class="content hvr-shadow clearfix">
-                    <figure class="poi-figure">
-                        <img src="public/assets/lax.jpg" alt="" class="hvr-grow-shadow">
-                    </figure>
-                    <h2>Venice Beach</h2>
-                    <p>One of the best-known monuments of the entertainment industry and its most important icons</p>
-                </div>
-                <div class="content hvr-shadow clearfix">
-                    <figure class="poi-figure">
-                        <img src="public/assets/lax.jpg" alt="" class="hvr-grow-shadow">
-                    </figure>
-                    <h2>Universal Studios</h2>
-                    <p>One of the best-known monuments of the entertainment industry and its most important icons</p>
-                </div>
-            </div>
-        </div>
-
-        <div id="weather">
-            <h3 class="block-title">Weather</h3>
-                <div>
-                    <div class="content hvr-shadow">
-                        <h2>Currently</h2>
-                        <h4 class="key-info">87°F</h4>
-                        <p class="weather-text">Light rain on Saturday through Wednesday, with high temperatures rising to 30°C on Tuesday.</p>
-                    </div>
-                </div>
-        </div>
-
-        <div id="language" class="hvr-shadow">
-            <h3 class="block-title">Primary Language</h3>
-            <h4 class="key-info">English</h4>
-        </div>
-
-        <div id="airport" class="hvr-shadow">
-            <h3 class="block-title">Closest Airport</h3>
-            <h4 class="key-info">Los Angeles International Airport</h4>
-        </div>
+    <section class="splashPage" id="splashPage">
+        <h1 class="logo">GetGo</h1>
+        <h2 class="tagline">Get going on your next adventure</h2>
     </section>
+    
 
-    <footer>
-         <p class="footer-text">©2018 Susie Kim & Moin Gani <img src="public/assets/doge.png" alt=""></p>
-    </footer>
+    <section class="contentPage" id="contentPage">
+        <header>
+            <h4 class="animated fadeInLeft hvr-icon-float-away"><span id="logo">GetGo</span> <i class="fas fa-plane hvr-icon"></i></h4>
+            <h1 id="destinationName"></h1>
+        </header>
+        <section class="container">
+            <div class="content hvr-shadow" id="currency"></div>
+
+            <div class="content" id="poi">
+            </div>
+            
+            <div class="content" id="tours">
+        
+            </div>
+            <div class="content clearfix hvr-shadow" id="weather"></div>
+            <div class="content hvr-float-shadow" id="language"></div>
+            <div class="content hvr-float-shadow" id="airport"></div>
+        </section>
+    </section>
+    
+    <form action="" class="splashSearchForm">
+        <input type="search" class="splashSearchBar" placeholder="Enter a destination" class="autocomplete" id="destination">
+    </form>
+    
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="public/scripts.js"></script>
     <script src="https://rawgithub.com/darkskyapp/skycons/master/skycons.js"></script>
